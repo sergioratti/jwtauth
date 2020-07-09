@@ -11,6 +11,7 @@ let checkjwt = async (req: Request, res: Response, next: NextFunction) => {
     // else i have to check if token is valid
 
     const token = req.get('Authorization');
+    
     if (!token)
         return res.sendStatus(401);
 
