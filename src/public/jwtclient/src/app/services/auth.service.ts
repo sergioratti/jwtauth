@@ -23,6 +23,8 @@ export class AuthService implements CanActivate {
   isLoggedIn(): boolean {
     let token = sessionStorage.getItem('token');
     let loggedin = token !== null;
+    if(loggedin === false)
+      this.logout();
     return loggedin;
   }
 

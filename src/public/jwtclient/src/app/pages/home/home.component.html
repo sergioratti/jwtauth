@@ -11,9 +11,10 @@
     <h2><a (click)="logout()" href="#">Logout</a></h2>
   </li>
   <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
+    <h2><a (click)="getUsers()" href="#">Get users</a></h2>
   </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
+</ul>
+
+<ul>
+  <li *ngFor="let user of users">{{user.name}} - {{user.email}}</li>
 </ul>

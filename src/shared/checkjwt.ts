@@ -10,22 +10,25 @@ let checkjwt = async (req: Request, res: Response, next: NextFunction) => {
 
     // else i have to check if token is valid
 
-    const token = req.get('Authorization');
-    
+    const token = req.get('Authorization')?.replace('Bearer ','');
+
     if (!token)
-        return res.sendStatus(401);
+        return res.status(401).json({ status: 401, message: 'jwt missing' });
 
-    try {
-        let decoded: any = verify(token, process.env.JWTSECRET || '');
-
-        if (decoded.userId !== undefined)
-            return next();
+    verify(token, process.env.JWTSECRET || '', (err, decoded) => {
+        if (err){
+            console.log(err);
+            return res.status(401).json({ status: 401, message: err.message });
+        }
+        else if (!decoded)
+            return res.status(401).json({ status: 401, message: 'jwt missing' });
         else
-            return res.sendStatus(401);
-    }
-    catch (err) {
-        return res.sendStatus(401);
-    }
+            return next();
+
+
+    });
+
+
 
 
 }

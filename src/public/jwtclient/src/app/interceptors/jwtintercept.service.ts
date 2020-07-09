@@ -11,11 +11,16 @@ import {
 import { Observable, throwError, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 // import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 
 export class JwtInterceptor implements HttpInterceptor {
+
+  constructor(private auth: AuthService) {
+
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -25,19 +30,21 @@ export class JwtInterceptor implements HttpInterceptor {
 
     let token = sessionStorage.getItem('token');
 
-    let clone = request.clone();
+    const cloned = request.clone({
+      headers: request.headers.set("Authorization",
+        "Bearer " + token)
+    });
 
-    clone.headers.append('Authorization', token);
-
-    return next.handle(clone)
-    .pipe(
-      tap(evt => {}),
-      catchError(error => {
-        if (error.status === 401) {
-          sessionStorage.removeItem('token');
-        }
-        return of(error);
-      }))
+    return next.handle(cloned)
+      .pipe(
+        tap(evt => { }),
+        catchError(error => {
+          console.log(`Error message : ${error.message}`);
+          if (error.status === 401) {
+            this.auth.logout();
+          }
+          return of(error);
+        }))
 
 
   }

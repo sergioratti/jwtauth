@@ -20,7 +20,7 @@ router.post('/login', async (req:Request, res:Response)=>{
     if(user.password !== password)
         return res.sendStatus(401)
 
-    let token = sign({userId:user.id,exp: Math.floor(Date.now() / 1000) + (60)},process.env.JWTSECRET||'');
+    let token = sign({userId:user.id,exp: Math.floor(Date.now() / 1000) + (60*60)},process.env.JWTSECRET||'');
 
     return res.json({status:0, token:token});
 })
